@@ -44,6 +44,18 @@ contract Auction {
             }
         }
 
-        retur
+        return (tempWinner, secondHighestBidAmt);
+    }
+
+    function closeBidding() external {
+        require(msg.sender == barbossa);
+
+        biddingClosed = true;
+    }
+
+    function closeAuctionAndCollectWinningBid() external {
+        require(!auctionClosed);
+        require(biddingClosed);
+        require(msg.sender == barbossa);
     }
 }
