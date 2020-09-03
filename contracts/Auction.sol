@@ -29,7 +29,7 @@ contract Auction {
         // require(msg.value == dehash(nonce, hashedEscrow[msg.sender]));
 
         escrow[msg.sender] = msg.value;
-        validBidders.append(msg.sender);
+        validBidders.push(msg.sender);
     }
 
     function highestBid() internal view returns (uint256) {
