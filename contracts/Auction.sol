@@ -16,7 +16,7 @@ contract Auction {
     constructor() public {
         biddingClosed = false;
         auctionClosed = false;
-        barbossa = 0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7;
+        barbossa = 0xb1B01b693335EC2244f9Ed415e5b2FF147b04B89;
     }
 
     function commitBid(uint256 commit) external {
