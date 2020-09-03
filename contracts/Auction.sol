@@ -32,9 +32,9 @@ contract Auction {
     }
 
     function highestBid() internal view returns (uint256) {
-        address memory tempWinner;
-        uint256 memory highestBidAmt = 0;
-        uint256 memory secondHighestBidAmt = 0;
+        address tempWinner;
+        uint256 highestBidAmt = 0;
+        uint256 secondHighestBidAmt = 0;
         for (uint256 index = 0; index < escrow.length; index++) {
             if (escrow[validBidders[index]] > highestBidAmt) {
                 tempWinner = validBidders[index];
@@ -61,7 +61,7 @@ contract Auction {
 
         auctionClosed = true;
 
-        uint256 memory winningBid = highestBid();
+        uint256 winningBid = highestBid();
 
         barbossa.transfer(winningBid);
 
