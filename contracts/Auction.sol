@@ -37,10 +37,10 @@ contract Auction {
         uint256 memory secondHighestBidAmt = 0;
         for (uint256 index = 0; index < escrow.length; index++) {
             if (escrow[validBidders[index]] > highestBidAmt) {
-                secondHighestBidAmt = highestBidAmt;
-                highestBidAmt = escrow[validBidders[index]];
-                
                 tempWinner = validBidders[index];
+
+                secondHighestBidAmt = highestBidAmt;
+                highestBidAmt = escrow[tempWinner];
             }
         }
 
