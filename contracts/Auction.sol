@@ -28,7 +28,7 @@ contract Auction {
         // require(msg.value == dehash(nonce, hashedEscrow[msg.sender]));
 
         escrow[msg.sender] = msg.value;
-        validBidder.append(msg.sender);
+        validBidders.append(msg.sender);
     }
 
     function highestBid() internal view returns (uint256) {
@@ -73,7 +73,7 @@ contract Auction {
 
         if (escrow[msg.sender] > 0) {
             msg.sender.transfer(escrow[msg.sender]);
-            escrow[msg.sender] = 0
+            escrow[msg.sender] = 0;
 
             // Need to emit event here too
         }
