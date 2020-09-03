@@ -13,7 +13,7 @@ contract Auction {
     mapping(address => uint256) public escrow;
 
     // constructor(address payable _barbossa) public {
-    constructor() {
+    constructor() public {
         biddingClosed = false;
         auctionClosed = false;
         barbossa = 0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7;
