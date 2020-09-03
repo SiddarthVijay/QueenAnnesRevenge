@@ -7,6 +7,7 @@ contract Auction {
     // uint256 public auctionEndTime;
     address public barbossa;
 
+    address[] public validBidders;
     mapping(address => uint256) public hashedEscrow;
     mapping(address => uint256) public escrow;
 
@@ -27,5 +28,22 @@ contract Auction {
         // require(msg.value == dehash(nonce, hashedEscrow[msg.sender]));
 
         escrow[msg.sender] = msg.value;
+        validBidder.append(msg.sender);
+    }
+
+    function highestBid() internal view returns (address, uint256) {
+        address memory tempWinner;
+        uint256 memory highestBidAmt = 0;
+        uint256 memory secondHighestBidAmt = 0;
+        for (uint256 index = 0; index < escrow.length; index++) {
+            if (escrow[validBidders[index]] > highestBidAmt) {
+                secondHighestBidAmt = highestBidAmt;
+                highestBidAmt = escrow[validBidders[index]];
+                
+                tempWinner = validBidders[index];
+            }
+        }
+
+        retur
     }
 }
