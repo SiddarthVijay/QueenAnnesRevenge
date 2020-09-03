@@ -31,7 +31,7 @@ contract Auction {
         validBidder.append(msg.sender);
     }
 
-    function highestBid() internal view returns (address, uint256) {
+    function highestBid() internal view returns (uint256) {
         address memory tempWinner;
         uint256 memory highestBidAmt = 0;
         uint256 memory secondHighestBidAmt = 0;
@@ -44,7 +44,8 @@ contract Auction {
             }
         }
 
-        return (tempWinner, secondHighestBidAmt);
+        escrow[tempWinner] -= secondHighestBidAmt;
+        return secondHighestBidAmt;
     }
 
     function closeBidding() external {
@@ -57,5 +58,24 @@ contract Auction {
         require(!auctionClosed);
         require(biddingClosed);
         require(msg.sender == barbossa);
+
+        auctionClosed = true;
+
+        uint256 memory winningBid = highestBid();
+
+        barbossa.transfer(winningBid);
+
+        // Need to emit events
+    }
+
+    function withdrawBid() external {
+        require(auctionClosed);
+
+        if (escrow[msg.sender] > 0) {
+            msg.sender.transfer(escrow[msg.sender]);
+            escrow[msg.sender] = 0
+
+            // Need to emit event here too
+        }
     }
 }
