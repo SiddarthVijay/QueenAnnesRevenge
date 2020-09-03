@@ -6,13 +6,13 @@ contract Auction {
     bool public auctionClosed;
     // uint256 public bidPeriodEndTime;
     // uint256 public auctionEndTime;
-    address public barbossa;
+    address payable public barbossa;
 
     address[] public validBidders;
     mapping(address => uint256) public hashedEscrow;
     mapping(address => uint256) public escrow;
 
-    constructor(address _barbossa) public {
+    constructor(address payable _barbossa) public {
         biddingClosed = false;
         auctionClosed = false;
         barbossa = _barbossa;
@@ -24,7 +24,8 @@ contract Auction {
         hashedEscrow[msg.sender] = commit;
     }
 
-    function revealBid(uint256 nonce) external payable {
+    // function revealBid(uint256 nonce) external payable {
+    function revealBid() external payable {
         require(biddingClosed);
         // require(msg.value == dehash(nonce, hashedEscrow[msg.sender]));
 
@@ -32,11 +33,11 @@ contract Auction {
         validBidders.push(msg.sender);
     }
 
-    function highestBid() internal view returns (uint256) {
+    function highestBid() internal returns (uint256) {
         address tempWinner;
         uint256 highestBidAmt = 0;
         uint256 secondHighestBidAmt = 0;
-        for (uint256 index = 0; index < escrow.length; index++) {
+        for (uint256 index = 0; index < validBidders.length; index++) {
             if (escrow[validBidders[index]] > highestBidAmt) {
                 tempWinner = validBidders[index];
 
