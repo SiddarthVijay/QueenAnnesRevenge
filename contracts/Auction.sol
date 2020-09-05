@@ -2,21 +2,23 @@
 pragma solidity >=0.4.22 <0.8.0;
 
 contract Auction {
+    // events
+    event BiddingClosed();
+    event AuctionClosed();
+    event WinningsWithdrawn(address barbossa, uint256 winnings);
+
     bool public biddingClosed;
     bool public auctionClosed;
-    // uint256 public bidPeriodEndTime;
-    // uint256 public auctionEndTime;
     address payable public barbossa;
 
     address[] public validBidders;
     mapping(address => uint256) public hashedEscrow;
     mapping(address => uint256) public escrow;
 
-    // constructor(address payable _barbossa) public {
     constructor() public {
         biddingClosed = false;
         auctionClosed = false;
-        barbossa = 0xb1B01b693335EC2244f9Ed415e5b2FF147b04B89;
+        barbossa = msg.sender;
     }
 
     function commitBid(uint256 commit) external {
@@ -55,6 +57,8 @@ contract Auction {
         require(msg.sender == barbossa);
 
         biddingClosed = true;
+
+        emit BiddingClosed();
     }
 
     function closeAuctionAndCollectWinningBid() external {
@@ -68,7 +72,8 @@ contract Auction {
 
         barbossa.transfer(winningBid);
 
-        // Need to emit events
+        emit AuctionClosed();
+        emit WinningsWithdrawn(barbossa, winningBid);
     }
 
     function withdrawBid() external {
@@ -77,8 +82,6 @@ contract Auction {
         if (escrow[msg.sender] > 0) {
             msg.sender.transfer(escrow[msg.sender]);
             escrow[msg.sender] = 0;
-
-            // Need to emit event here too
         }
     }
 }
