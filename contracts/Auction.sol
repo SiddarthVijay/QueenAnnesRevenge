@@ -3,8 +3,8 @@ pragma solidity >=0.4.22 <0.8.0;
 
 contract Auction {
     // events
-    event bidMade(address);
-    event bidRevealed(address, uint256, bool);
+    event bidMade(address bidder);
+    event bidRevealed(address bidder, uint256 value, bool isValid);
     event BiddingClosed();
     event AuctionClosed(address barbossa, uint256 winnings);
 
@@ -13,7 +13,7 @@ contract Auction {
     address payable public barbossa;
 
     address[] public validBidders;
-    mapping(address => uint256) public hashedEscrow;
+    mapping(address => bytes32) public hashedEscrow;
     mapping(address => uint256) public escrow;
 
     constructor() public {
@@ -22,7 +22,7 @@ contract Auction {
         barbossa = msg.sender;
     }
 
-    function commitBid(uint256 commit) external {
+    function commitBid(bytes32 commit) external {
         require(!biddingClosed);
 
         hashedEscrow[msg.sender] = commit;
@@ -30,10 +30,17 @@ contract Auction {
         emit bidMade(msg.sender);
     }
 
-    // function revealBid(uint256 nonce) external payable {
-    function revealBid() external payable {
+    function getCommitHash(uint256 value, uint256 nonce)
+        internal
+        pure
+        returns (bytes32)
+    {
+        return keccak256(abi.encodePacked(value, nonce));
+    }
+
+    function revealBid(uint256 value, uint256 nonce) external payable {
         require(biddingClosed);
-        // require(msg.value == dehash(nonce, hashedEscrow[msg.sender]));
+        require(getCommitHash(value, nonce) == hashedEscrow[msg.sender]);
 
         escrow[msg.sender] = msg.value;
         validBidders.push(msg.sender);
