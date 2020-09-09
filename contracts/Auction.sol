@@ -3,9 +3,10 @@ pragma solidity >=0.4.22 <0.8.0;
 
 contract Auction {
     // events
+    event bidMade(address);
+    event bidRevealed(address, uint256, bool);
     event BiddingClosed();
-    event AuctionClosed();
-    event WinningsWithdrawn(address barbossa, uint256 winnings);
+    event AuctionClosed(address barbossa, uint256 winnings);
 
     bool public biddingClosed;
     bool public auctionClosed;
@@ -25,6 +26,8 @@ contract Auction {
         require(!biddingClosed);
 
         hashedEscrow[msg.sender] = commit;
+
+        emit bidMade(msg.sender);
     }
 
     // function revealBid(uint256 nonce) external payable {
@@ -34,6 +37,8 @@ contract Auction {
 
         escrow[msg.sender] = msg.value;
         validBidders.push(msg.sender);
+
+        emit bidRevealed(msg.sender, msg.value, true);
     }
 
     function highestBid() internal returns (uint256) {
@@ -72,8 +77,7 @@ contract Auction {
 
         barbossa.transfer(winningBid);
 
-        emit AuctionClosed();
-        emit WinningsWithdrawn(barbossa, winningBid);
+        emit AuctionClosed(barbossa, winningBid);
     }
 
     function withdrawBid() external {
