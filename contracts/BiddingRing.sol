@@ -10,6 +10,7 @@ contract BiddingRing {
 
     bool public biddingClosed;
     bool public auctionClosed;
+    // Need to name this to be the Auction contract
     address payable public barbossa;
 
     address[] public validBidders;
@@ -81,6 +82,7 @@ contract BiddingRing {
         uint256 winningBid;
         (winningBidder, winningBid) = highestBid();
 
+        // Need to send it to the contract instead
         barbossa.transfer(winningBid);
 
         emit AuctionClosed(barbossa, winningBid);
@@ -94,4 +96,7 @@ contract BiddingRing {
             escrow[msg.sender] = 0;
         }
     }
+
+    // Write a withdrawBidFromAuction function that withdraws the bid that,
+    // was given in the name of the BiddingRing and sends it to the winning pirate bidder
 }

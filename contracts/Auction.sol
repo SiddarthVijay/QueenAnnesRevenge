@@ -22,6 +22,7 @@ contract Auction {
         barbossa = msg.sender;
     }
 
+    // Need seperate commitBid for calls coming from the Bidding ring: commitBid(commit, address)
     function commitBid(bytes32 commit) external {
         require(!biddingClosed);
 
