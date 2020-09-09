@@ -38,9 +38,9 @@ contract Auction {
         return keccak256(abi.encodePacked(value, nonce));
     }
 
-    function revealBid(uint256 value, uint256 nonce) external payable {
+    function revealBid(uint256 nonce) external payable {
         require(biddingClosed);
-        require(getCommitHash(value, nonce) == hashedEscrow[msg.sender]);
+        require(getCommitHash(msg.value, nonce) == hashedEscrow[msg.sender]);
 
         escrow[msg.sender] = msg.value;
         validBidders.push(msg.sender);
