@@ -22,7 +22,11 @@ contract Auction {
         barbossa = msg.sender;
     }
 
-    // Need seperate commitBid for calls coming from the Bidding ring: commitBid(commit, address)
+    /**
+     * commitBid :- Initial commitment to bid sent in by the bidders
+     *
+     * @param {bytes32} commit -  This is the hash of [bin_encoding(nonce+random_number)]
+     */
     function commitBid(bytes32 commit) external {
         require(!biddingClosed);
 
@@ -31,6 +35,12 @@ contract Auction {
         emit bidMade(msg.sender);
     }
 
+    /**
+     * getCommitHash :- Returns hashed value given bid amount and random number
+     *
+     * @param {uint256} value -  Monetary amount thats been commited
+     * @param {uint256} nonce -  Random number initially sent with the monetary commitment
+     */
     function getCommitHash(uint256 value, uint256 nonce)
         internal
         pure
@@ -39,6 +49,11 @@ contract Auction {
         return keccak256(abi.encodePacked(value, nonce));
     }
 
+    /**
+     * revealBid :- Takes money from bidder and checks if its equal to the commited amount
+     *
+     * @param {uint256} nonce -  Initial hash value sent in the commit phase
+     */
     function revealBid(uint256 nonce) external payable {
         require(biddingClosed);
         require(getCommitHash(msg.value, nonce) == hashedEscrow[msg.sender]);
@@ -49,6 +64,10 @@ contract Auction {
         emit bidRevealed(msg.sender, msg.value, true);
     }
 
+    /**
+     * highestBid :- Returns the second highest bid amount
+     *
+     */
     function highestBid() internal returns (uint256) {
         address tempWinner;
         uint256 highestBidAmt = 0;
@@ -66,6 +85,10 @@ contract Auction {
         return secondHighestBidAmt;
     }
 
+    /**
+     * closeBidding :- Only can be called by host of the auction to close the bidding. No further commitments are accepted past this
+     *
+     */
     function closeBidding() external {
         require(msg.sender == barbossa);
 
@@ -74,6 +97,10 @@ contract Auction {
         emit BiddingClosed();
     }
 
+    /**
+     * closeAuctionAndCollectWinningBid :- After winner is determined, closes auction and pays the host the second highest bid amount
+     *
+     */
     function closeAuctionAndCollectWinningBid() external {
         require(!auctionClosed);
         require(biddingClosed);
@@ -88,6 +115,10 @@ contract Auction {
         emit AuctionClosed(barbossa, winningBid);
     }
 
+    /**
+     * closeAuctionAndCollectWinningBid :- After winner is determined, closes auction and pays the host the second highest bid amount
+     *
+     */
     function withdrawBid() external returns (uint256) {
         require(auctionClosed);
 

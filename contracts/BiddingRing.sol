@@ -33,6 +33,11 @@ contract BiddingRing {
         barbossa = msg.sender;
     }
 
+    /**
+     * setAuctionContract :- Connects the inner ring contract to the main bidding contract
+     *
+     * @param {address} _AuctionContract - The address of the main contract
+     */
     function setAuctionContract(address _AuctionContract) external {
         auction = Auction(_AuctionContract);
 
@@ -87,6 +92,10 @@ contract BiddingRing {
         emit BiddingClosed();
     }
 
+    /**
+     * closeAuctionAndMakeCommit :- When auction is closed, makes commit to the main auction
+     *
+     */
     function closeAuctionAndMakeCommit() external {
         require(!commitMade);
         require(biddingClosed);
@@ -105,6 +114,10 @@ contract BiddingRing {
         emit AuctionClosed(barbossa, winningBidder);
     }
 
+    /**
+     * revealCommitToAuction :- Sends highest bid in inner ring to the original auction after bidding is closed in the main auction
+     *
+     */
     function revealCommitToAuction() external payable {
         require(commitMade);
         require(msg.sender == barbossa);
@@ -125,6 +138,10 @@ contract BiddingRing {
         }
     }
 
+    /**
+     * withdrawWinningsFromAuctionAndRecieve :- Withdraws amount from main auction once the auction is closed
+     *
+     */
     function withdrawWinningsFromAuctionAndReceive() external payable {
         require(auctionClosed);
         require(msg.sender == winningBidder);
@@ -135,7 +152,4 @@ contract BiddingRing {
 
         emit ReceivedWinnings(msg.sender, amount);
     }
-
-    // Write a withdrawBidFromAuction function that withdraws the bid that,
-    // was given in the name of the BiddingRing and sends it to the winning pirate bidder
 }
