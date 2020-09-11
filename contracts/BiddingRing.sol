@@ -26,12 +26,17 @@ contract BiddingRing {
     mapping(address => bytes32) public hashedEscrow;
     mapping(address => uint256) public escrow;
 
-    constructor(address payable _AuctionContract) public {
+    constructor() public {
         biddingClosed = false;
         auctionClosed = false;
         commitMade = false;
         barbossa = msg.sender;
+    }
+
+    function setAuctionContract(address _AuctionContract) {
         auction = Auction(_AuctionContract);
+
+        return;
     }
 
     function commitBid(bytes32 commit) external {
@@ -104,7 +109,7 @@ contract BiddingRing {
         require(commitMade);
         require(msg.sender == barbossa);
 
-        auction.revealBid{value: winningBid}(nonce);
+        auction.revealBid.value(winningBid)(nonce);
 
         auctionClosed = true;
 
