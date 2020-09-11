@@ -88,12 +88,17 @@ contract Auction {
         emit AuctionClosed(barbossa, winningBid);
     }
 
-    function withdrawBid() external {
+    function withdrawBid() external returns (uint256) {
         require(auctionClosed);
+
+        uint256 amount;
 
         if (escrow[msg.sender] > 0) {
             msg.sender.transfer(escrow[msg.sender]);
+            amount = escrow[msg.sender];
             escrow[msg.sender] = 0;
         }
+
+        return amount;
     }
 }
