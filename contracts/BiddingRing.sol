@@ -6,21 +6,24 @@ contract BiddingRing {
     event bidMade(address bidder);
     event bidRevealed(address bidder, uint256 value, bool isValid);
     event BiddingClosed();
-    event AuctionClosed(address barbossa, uint256 winnings);
+    event AuctionClosed(address barbossa, address winner, uint256 winnings);
 
     bool public biddingClosed;
     bool public auctionClosed;
     // Need to name this to be the Auction contract
     address payable public barbossa;
+    address payable public AuctionContract;
+    address public winningBidder;
 
     address[] public validBidders;
     mapping(address => bytes32) public hashedEscrow;
     mapping(address => uint256) public escrow;
 
-    constructor() public {
+    constructor(address payable _AuctionContract) public {
         biddingClosed = false;
         auctionClosed = false;
         barbossa = msg.sender;
+        AuctionContract = _AuctionContract;
     }
 
     function commitBid(bytes32 commit) external {
@@ -78,14 +81,12 @@ contract BiddingRing {
 
         auctionClosed = true;
 
-        address winningBidder;
         uint256 winningBid;
         (winningBidder, winningBid) = highestBid();
 
-        // Need to send it to the contract instead
-        barbossa.transfer(winningBid);
+        AuctionContract.transfer(winningBid);
 
-        emit AuctionClosed(barbossa, winningBid);
+        emit AuctionClosed(barbossa, winningBidder, winningBid);
     }
 
     function withdrawBid() external {
