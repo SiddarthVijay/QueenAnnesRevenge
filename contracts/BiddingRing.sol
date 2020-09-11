@@ -33,7 +33,7 @@ contract BiddingRing {
         barbossa = msg.sender;
     }
 
-    function setAuctionContract(address _AuctionContract) {
+    function setAuctionContract(address _AuctionContract) external {
         auction = Auction(_AuctionContract);
 
         return;
